@@ -452,6 +452,11 @@ public class ButtonSettings extends SettingsPreferenceFragment
             }
         }
 
+        if (mNavigationPreferencesCat != null
+                && mNavigationPreferencesCat.getPreferenceCount() == 0) {
+            prefScreen.removePreference(mNavigationPreferencesCat);
+        }
+
         List<Integer> unsupportedValues = new ArrayList<>();
         List<String> entries = new ArrayList<>(
                 Arrays.asList(res.getStringArray(R.array.hardware_keys_action_entries)));
@@ -508,20 +513,10 @@ public class ButtonSettings extends SettingsPreferenceFragment
             mAppSwitchLongPressAction.setEntryValues(actionValues);
         }
 
-        mNavigationBackLongPressAction.setEntries(actionEntries);
-        mNavigationBackLongPressAction.setEntryValues(actionValues);
-
-        mNavigationHomeLongPressAction.setEntries(actionEntries);
-        mNavigationHomeLongPressAction.setEntryValues(actionValues);
-
-        mNavigationHomeDoubleTapAction.setEntries(actionEntries);
-        mNavigationHomeDoubleTapAction.setEntryValues(actionValues);
-
-        mNavigationAppSwitchLongPressAction.setEntries(actionEntries);
-        mNavigationAppSwitchLongPressAction.setEntryValues(actionValues);
-
-        mEdgeLongSwipeAction.setEntries(actionEntries);
-        mEdgeLongSwipeAction.setEntryValues(actionValues);
+        if (mEdgeLongSwipeAction != null) {
+            mEdgeLongSwipeAction.setEntries(actionEntries);
+            mEdgeLongSwipeAction.setEntryValues(actionValues);
+        }
     }
 
     @Override
@@ -698,20 +693,12 @@ public class ButtonSettings extends SettingsPreferenceFragment
         /* Toggle hardkey control availability depending on navbar state */
         if (mNavigationPreferencesCat != null) {
             if (force || navbarEnabled) {
-                if (DeviceUtils.isEdgeToEdgeEnabled(requireContext())) {
-                    mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
-
-                    mNavigationPreferencesCat.removePreference(mNavigationBackLongPressAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationHomeLongPressAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationHomeDoubleTapAction);
-                    mNavigationPreferencesCat.removePreference(mNavigationAppSwitchLongPressAction);
-                } else {
-                    mNavigationPreferencesCat.addPreference(mNavigationBackLongPressAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationHomeLongPressAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationHomeDoubleTapAction);
-                    mNavigationPreferencesCat.addPreference(mNavigationAppSwitchLongPressAction);
-
-                    mNavigationPreferencesCat.removePreference(mEdgeLongSwipeAction);
+                if (mEdgeLongSwipeAction != null) {
+                    if (DeviceUtils.isEdgeToEdgeEnabled(requireContext())) {
+                        mNavigationPreferencesCat.addPreference(mEdgeLongSwipeAction);
+                    } else {
+                        mNavigationPreferencesCat.removePreference(mEdgeLongSwipeAction);
+                    }
                 }
             }
         }
